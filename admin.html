@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kekeletso Admin — Operations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #141414;
+  --panel: #1a1a1a;
+  --border: #252525;
+  --border-light: #2e2e2e;
+  --yellow: #f0c040;
+  --yellow-dim: rgba(240,192,64,0.12);
+  --yellow-border: rgba(240,192,64,0.3);
+  --green: #3ddc84;
+  --green-dim: rgba(61,220,132,0.1);
+  --red: #ff5f5f;
+  --blue: #4f9eff;
+  --orange: #ff9640;
+  --text: #e0e0e0;
+  --muted: #606060;
+  --muted2: #404040;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── LOGIN ── */
+#loginScreen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 0;
+}
+.login-box {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-top: 3px solid var(--yellow);
+  padding: 44px 40px;
+  width: 360px;
+  border-radius: 4px;
+}
+.login-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.login-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+}
+.login-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}
+.login-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 14px;
+  border-radius: 3px;
+  outline: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.login-input:focus { border-color: var(--yellow); }
+.login-btn {
+  width: 100%;
+  background: var(--yellow);
+  color: #0d0d0d;
+  border: none;
+  padding: 13px;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 4px;
+  transition: opacity 0.2s;
+  text-transform: uppercase;
+}
+.login-btn:hover { opacity: 0.88; }
+.login-err {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+  display: none;
+}
+
+/* ── SHELL ── */
+#appShell { display: none; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 0;
+  flex-shrink: 0;
+}
+.topbar-brand {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--yellow);
+}
+.topbar-sep { width: 1px; height: 24px; background: var(--border); margin: 0 18px; }
+.topbar-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.topbar-user {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.topbar-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted2);
+}
+.logout-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+.logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ── STATUS BAR ── */
+.statusbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.filter-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.filter-btn:hover { border-color: var(--border-light); color: var(--text); }
+.filter-btn.active { background: var(--yellow-dim); border-color: var(--yellow-border); color: var(--yellow); }
+.filter-count {
+  background: var(--border);
+  color: var(--muted);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-family: var(--mono);
+}
+.filter-btn.active .filter-count { background: rgba(240,192,64,0.2); color: var(--yellow); }
+.sb-spacer { margin-left: auto; }
+.search-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-radius: 2px;
+  outline: none;
+  width: 200px;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--yellow-border); }
+.search-input::placeholder { color: var(--muted2); }
+
+/* ── MAIN BODY ── */
+.main-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── TICKET LIST ── */
+.ticket-list {
+  width: 360px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  background: var(--surface);
+}
+.ticket-list::-webkit-scrollbar { width: 4px; }
+.ticket-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+.ticket-item {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+.ticket-item:hover { background: var(--panel); }
+.ticket-item.active { background: var(--panel); border-left: 3px solid var(--yellow); }
+.ticket-item.active { padding-left: 13px; }
+
+.ti-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.ti-code {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--yellow);
+}
+.ti-time { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.ti-company { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+.ti-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.ti-vol { color: var(--text); font-weight: 600; }
+.ti-status { margin-top: 8px; }
+
+/* ── STATUS BADGES ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.badge-NEW { background: rgba(79,158,255,0.12); color: var(--blue); border: 1px solid rgba(79,158,255,0.25); }
+.badge-PRICING { background: rgba(255,150,64,0.12); color: var(--orange); border: 1px solid rgba(255,150,64,0.25); }
+.badge-QUOTED { background: rgba(240,192,64,0.12); color: var(--yellow); border: 1px solid rgba(240,192,64,0.3); }
+.badge-CONFIRMED { background: rgba(61,220,132,0.12); color: var(--green); border: 1px solid rgba(61,220,132,0.25); }
+.badge-DELIVERED { background: rgba(61,220,132,0.18); color: #7fffbe; border: 1px solid rgba(61,220,132,0.35); }
+.badge-CLOSED { background: rgba(96,96,96,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+.urgency-dot {
+  position: absolute;
+  top: 14px;
+  right: 50px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--bg);
+}
+.detail-panel::-webkit-scrollbar { width: 4px; }
+.detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.detail-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted2);
+  gap: 10px;
+}
+.detail-empty-icon { font-size: 36px; opacity: 0.4; }
+.detail-empty-text { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; }
+
+/* DETAIL HEADER */
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dh-left {}
+.dh-code {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--yellow);
+  margin-bottom: 4px;
+}
+.dh-company { font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+.dh-ts { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.dh-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+
+/* STATUS STEPPER */
+.stepper {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.step {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+  position: relative;
+}
+.step::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+.step:last-child::after { display: none; }
+.step-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  margin: 0 auto 6px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step.done .step-dot { background: var(--green); border-color: var(--green); color: #0d0d0d; }
+.step.done::after { background: var(--green); }
+.step.current .step-dot { background: var(--yellow); border-color: var(--yellow); color: #0d0d0d; }
+.step-label { font-size: 10px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.5px; }
+.step.done .step-label, .step.current .step-label { color: var(--text); }
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 16px;
+}
+.ic-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-family: var(--mono); }
+.ic-val { font-size: 15px; font-weight: 600; color: var(--text); }
+.ic-val.highlight { color: var(--yellow); font-family: var(--mono); font-size: 18px; font-weight: 700; }
+
+/* SECTION TITLE */
+.sec-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* CONTROLS ROW */
+.controls-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
+.ctrl-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
+.ctrl-select {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 9px 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.ctrl-select:focus { border-color: var(--yellow-border); }
+
+/* QUOTE BUILDER */
+.quote-builder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.qb-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--yellow);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+.qb-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.qb-group { display: flex; flex-direction: column; gap: 5px; }
+.qb-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
+.qb-input {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 9px 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.qb-input:focus { border-color: var(--yellow-border); }
+.qb-calc {
+  background: var(--yellow-dim);
+  border: 1px solid var(--yellow-border);
+  border-radius: 3px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.qc-item {}
+.qc-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 3px; }
+.qc-val { font-family: var(--mono); font-weight: 700; font-size: 18px; color: var(--yellow); }
+.qb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* QUOTE OUTPUT */
+.quote-output {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--yellow);
+  border-radius: 3px;
+  padding: 18px 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: none;
+}
+
+/* SUPPLIER PANEL */
+.supplier-panel {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  overflow-y: auto;
+  padding: 16px;
+}
+.supplier-panel::-webkit-scrollbar { width: 4px; }
+.supplier-panel::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+.sp-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.supplier-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.supplier-card:hover { border-color: var(--yellow-border); }
+.supplier-card.selected { border-color: var(--yellow); background: var(--yellow-dim); }
+.sc-name { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+.sc-price {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.sc-price-label { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-bottom: 8px; }
+.sc-detail { font-size: 11px; color: var(--muted); line-height: 1.8; }
+.sc-detail strong { color: var(--text); }
+.sc-transport {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--orange);
+  margin-top: 4px;
+}
+.add-supplier-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed var(--border-light);
+  color: var(--muted);
+  padding: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 6px;
+  transition: all 0.2s;
+}
+.add-supplier-btn:hover { border-color: var(--yellow-border); color: var(--yellow); }
+
+/* NOTES */
+.notes-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-radius: 3px;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  min-height: 90px;
+  transition: border-color 0.2s;
+  line-height: 1.7;
+}
+.notes-area:focus { border-color: var(--yellow-border); }
+.notes-area::placeholder { color: var(--muted2); }
+
+/* BUTTONS */
+.btn {
+  padding: 9px 18px;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--yellow); color: #0d0d0d; border: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost { background: none; border: 1px solid var(--border-light); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--text); color: var(--text); }
+.btn-green { background: var(--green-dim); border: 1px solid rgba(61,220,132,0.3); color: var(--green); }
+.btn-green:hover { background: rgba(61,220,132,0.18); }
+.btn-wa { background: #25D366; border: none; color: #fff; }
+.btn-wa:hover { opacity: 0.85; }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+
+/* ADD TICKET MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-top: 3px solid var(--yellow);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+}
+.modal-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--yellow);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-group { display: flex; flex-direction: column; gap: 5px; }
+.modal-group.full { grid-column: 1/-1; }
+.modal-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
+.modal-input, .modal-select, .modal-textarea {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--yellow-border); }
+.modal-input::placeholder { color: var(--muted2); }
+.modal-textarea { resize: vertical; min-height: 70px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+
+/* ADD SUPPLIER MODAL */
+.supp-modal {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-top: 3px solid var(--green);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+}
+.supp-modal-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--green);
+  margin-bottom: 20px;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--green);
+  padding: 12px 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-radius: 3px;
+  color: var(--text);
+  z-index: 500;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+@media (max-width: 900px) {
+  .supplier-panel { display: none; }
+}
+@media (max-width: 640px) {
+  .ticket-list { width: 100%; border-right: none; }
+  .detail-panel { display: none; }
+  .ticket-list.hidden { display: none; }
+  .detail-panel.mobile-show { display: block; }
+}
+</style>
+</head>
+<body>
+
+<!-- ──────────── LOGIN ──────────── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">KEKELETSO SOLUTIONS</div>
+    <div class="login-sub">OPERATIONS DASHBOARD · INTERNAL ONLY</div>
+    <label class="login-label">Username</label>
+    <input class="login-input" type="text" id="loginUser" placeholder="agent name" autocomplete="username">
+    <label class="login-label">Password</label>
+    <input class="login-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">ENTER DASHBOARD</button>
+    <div class="login-err" id="loginErr">Incorrect credentials</div>
+  </div>
+</div>
+
+<!-- ──────────── APP SHELL ──────────── -->
+<div id="appShell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">KEKELETSO</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-title">OPS DASHBOARD</div>
+    <div class="topbar-right">
+      <div class="topbar-user" id="topbarUser">—</div>
+      <div class="topbar-date" id="topbarDate">—</div>
+      <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <button class="filter-btn active" data-filter="ALL" onclick="setFilter('ALL',this)">ALL <span class="filter-count" id="cnt-ALL">0</span></button>
+    <button class="filter-btn" data-filter="NEW" onclick="setFilter('NEW',this)">NEW <span class="filter-count" id="cnt-NEW">0</span></button>
+    <button class="filter-btn" data-filter="PRICING" onclick="setFilter('PRICING',this)">PRICING <span class="filter-count" id="cnt-PRICING">0</span></button>
+    <button class="filter-btn" data-filter="QUOTED" onclick="setFilter('QUOTED',this)">QUOTED <span class="filter-count" id="cnt-QUOTED">0</span></button>
+    <button class="filter-btn" data-filter="CONFIRMED" onclick="setFilter('CONFIRMED',this)">CONFIRMED <span class="filter-count" id="cnt-CONFIRMED">0</span></button>
+    <button class="filter-btn" data-filter="DELIVERED" onclick="setFilter('DELIVERED',this)">DELIVERED <span class="filter-count" id="cnt-DELIVERED">0</span></button>
+    <button class="filter-btn" data-filter="CLOSED" onclick="setFilter('CLOSED',this)">CLOSED <span class="filter-count" id="cnt-CLOSED">0</span></button>
+    <div class="sb-spacer"></div>
+    <input class="search-input" type="text" placeholder="Search tickets..." id="searchInput" oninput="renderList()">
+    <button class="btn btn-primary btn-sm" onclick="openNewTicket()" style="margin-left:8px;">+ NEW TICKET</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-body">
+
+    <!-- TICKET LIST -->
+    <div class="ticket-list" id="ticketList">
+      <div style="padding:40px 20px;text-align:center;color:var(--muted2);font-family:var(--mono);font-size:12px;">No tickets yet.</div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div class="detail-panel" id="detailPanel">
+      <div class="detail-empty">
+        <div class="detail-empty-icon">⛽</div>
+        <div class="detail-empty-text">SELECT A TICKET TO VIEW DETAILS</div>
+      </div>
+    </div>
+
+    <!-- SUPPLIER SIDEBAR -->
+    <div class="supplier-panel" id="supplierPanel">
+      <div class="sp-title">⛽ Supplier Prices</div>
+      <div id="supplierList"></div>
+      <button class="add-supplier-btn" onclick="openAddSupplier()">+ ADD SUPPLIER</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ──────────── NEW TICKET MODAL ──────────── -->
+<div class="modal-overlay" id="newTicketModal">
+  <div class="modal">
+    <div class="modal-title">NEW TICKET</div>
+    <div class="modal-grid">
+      <div class="modal-group"><label class="modal-label">Company Name *</label><input class="modal-input" id="nt-company" placeholder="Company name"></div>
+      <div class="modal-group"><label class="modal-label">Contact Person *</label><input class="modal-input" id="nt-contact" placeholder="Full name"></div>
+      <div class="modal-group"><label class="modal-label">Phone / WhatsApp *</label><input class="modal-input" id="nt-phone" placeholder="e.g. 072 000 0000"></div>
+      <div class="modal-group"><label class="modal-label">Email</label><input class="modal-input" id="nt-email" placeholder="email@company.com" type="email"></div>
+      <div class="modal-group full"><label class="modal-label">Delivery Location *</label><input class="modal-input" id="nt-location" placeholder="City, Province, or full address"></div>
+      <div class="modal-group"><label class="modal-label">Volume (Litres) *</label><select class="modal-select" id="nt-volume">
+        <option value="">— Select —</option>
+        <option value="10000">10,000 L</option>
+        <option value="20000">20,000 L</option>
+        <option value="30000">30,000 L</option>
+        <option value="40000">40,000 L</option>
+        <option value="60000">60,000 L</option>
+        <option value="100000">100,000 L</option>
+        <option value="custom">Custom</option>
+      </select></div>
+      <div class="modal-group" id="custom-vol-group" style="display:none;"><label class="modal-label">Custom Volume (L)</label><input class="modal-input" id="nt-custom-vol" placeholder="e.g. 75000" type="number" min="10000"></div>
+      <div class="modal-group"><label class="modal-label">Diesel Grade</label><select class="modal-select" id="nt-grade">
+        <option value="50ppm">50ppm (Standard)</option>
+        <option value="500ppm">500ppm</option>
+      </select></div>
+      <div class="modal-group"><label class="modal-label">Delivery Date</label><select class="modal-select" id="nt-delivery">
+        <option value="">— Select —</option>
+        <option>Urgent (24–48 hrs)</option>
+        <option>Within 3 days</option>
+        <option>Within 7 days</option>
+        <option>Scheduled</option>
+      </select></div>
+      <div class="modal-group"><label class="modal-label">Industry</label><select class="modal-select" id="nt-industry">
+        <option value="">— Select —</option>
+        <option>Mining</option>
+        <option>Agriculture</option>
+        <option>Transport / Logistics</option>
+        <option>Construction</option>
+        <option>Manufacturing</option>
+        <option>Generators & Power</option>
+        <option>Other</option>
+      </select></div>
+      <div class="modal-group"><label class="modal-label">Tank Capacity</label><select class="modal-select" id="nt-tank">
+        <option value="">— Select —</option>
+        <option>5,000 L</option>
+        <option>10,000 L</option>
+        <option>20,000 L</option>
+        <option>30,000 L</option>
+        <option>60,000 L</option>
+        <option>Multiple Tanks</option>
+        <option>No on-site tank</option>
+      </select></div>
+      <div class="modal-group"><label class="modal-label">Order Type</label><select class="modal-select" id="nt-freq">
+        <option value="">— Select —</option>
+        <option>Once-off</option>
+        <option>Weekly supply</option>
+        <option>Monthly supply</option>
+        <option>Long-term contract</option>
+      </select></div>
+      <div class="modal-group"><label class="modal-label">Assign Agent</label><select class="modal-select" id="nt-agent">
+        <option value="">— Unassigned —</option>
+        <option>Katleho Matima</option>
+        <option>Mbuyiselo Mbonambi</option>
+        <option>Karabo Tladi</option>
+      </select></div>
+      <div class="modal-group full"><label class="modal-label">Notes</label><textarea class="modal-textarea" id="nt-notes" placeholder="Site access info, special requirements, etc."></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('newTicketModal')">CANCEL</button>
+      <button class="btn btn-primary" onclick="createTicket()">CREATE TICKET</button>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────── ADD SUPPLIER MODAL ──────────── -->
+<div class="modal-overlay" id="addSupplierModal">
+  <div class="supp-modal">
+    <div class="supp-modal-title">ADD SUPPLIER</div>
+    <div class="modal-grid">
+      <div class="modal-group full"><label class="modal-label">Supplier Name *</label><input class="modal-input" id="s-name" placeholder="Company or depot name"></div>
+      <div class="modal-group"><label class="modal-label">Contact Person</label><input class="modal-input" id="s-contact" placeholder="Name"></div>
+      <div class="modal-group"><label class="modal-label">Phone</label><input class="modal-input" id="s-phone" placeholder="Phone number"></div>
+      <div class="modal-group"><label class="modal-label">Email</label><input class="modal-input" id="s-email" placeholder="email@supplier.com" type="email"></div>
+      <div class="modal-group"><label class="modal-label">Depot / Base Location</label><input class="modal-input" id="s-depot" placeholder="e.g. Johannesburg Vopak"></div>
+      <div class="modal-group"><label class="modal-label">Price per Litre (R)</label><input class="modal-input" id="s-price" placeholder="e.g. 17.80" type="number" step="0.01"></div>
+      <div class="modal-group"><label class="modal-label">Transport Rate (R/km)</label><input class="modal-input" id="s-transport" placeholder="e.g. 28.50" type="number" step="0.01"></div>
+      <div class="modal-group"><label class="modal-label">Reliability</label><select class="modal-select" id="s-reliability">
+        <option value="5">★★★★★ Excellent</option>
+        <option value="4">★★★★ Good</option>
+        <option value="3">★★★ Average</option>
+        <option value="2">★★ Below average</option>
+      </select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('addSupplierModal')">CANCEL</button>
+      <button class="btn btn-green" onclick="saveSupplier()">SAVE SUPPLIER</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── AUTH ───
+const USERS = {
+  'katleho': 'keke2026',
+  'mbuyiselo': 'keke2026',
+  'karabo': 'keke2026',
+  'admin': 'kekeadmin2026'
+};
+let currentUser = null;
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.toLowerCase().trim();
+  const p = document.getElementById('loginPass').value;
+  if (USERS[u] && USERS[u] === p) {
+    currentUser = u.charAt(0).toUpperCase() + u.slice(1);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('topbarUser').textContent = currentUser.toUpperCase();
+    updateClock();
+    setInterval(updateClock, 30000);
+    render();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('topbarDate').textContent = now.toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'}) + ' ' + now.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ─── DATA ───
+let tickets = JSON.parse(localStorage.getItem('keke_tickets_v2') || '[]');
+let suppliers = JSON.parse(localStorage.getItem('keke_suppliers_v2') || '[]');
+let currentFilter = 'ALL';
+let selectedTicketId = null;
+let selectedSupplierId = null;
+
+function save() {
+  localStorage.setItem('keke_tickets_v2', JSON.stringify(tickets));
+}
+function saveSuppliers() {
+  localStorage.setItem('keke_suppliers_v2', JSON.stringify(suppliers));
+}
+
+// ─── TICKET COUNTER ───
+function genId() {
+  const max = tickets.reduce((m, t) => {
+    const n = parseInt(t.code.replace('ORDER-','')) || 0;
+    return Math.max(m, n);
+  }, 0);
+  return 'ORDER-' + String(max + 1).padStart(3,'0');
+}
+
+// ─── FILTER ───
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedTicketId = null;
+  renderList();
+  document.getElementById('detailPanel').innerHTML = `<div class="detail-empty"><div class="detail-empty-icon">⛽</div><div class="detail-empty-text">SELECT A TICKET TO VIEW DETAILS</div></div>`;
+}
+
+// ─── RENDER ───
+function render() {
+  updateCounts();
+  renderList();
+  renderSuppliers();
+}
+
+function updateCounts() {
+  const statuses = ['ALL','NEW','PRICING','QUOTED','CONFIRMED','DELIVERED','CLOSED'];
+  statuses.forEach(s => {
+    const el = document.getElementById('cnt-' + s);
+    if (el) el.textContent = s === 'ALL' ? tickets.length : tickets.filter(t=>t.status===s).length;
+  });
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput')?.value.toLowerCase() || '';
+  return tickets.filter(t => {
+    const matchFilter = currentFilter === 'ALL' || t.status === currentFilter;
+    const matchSearch = !q || t.code.toLowerCase().includes(q) || t.company.toLowerCase().includes(q) || t.location.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  }).sort((a,b) => new Date(b.created) - new Date(a.created));
+}
+
+const URGENCY = ['Urgent (24–48 hrs)', 'Urgent (24–48 hours)'];
+
+function renderList() {
+  const list = document.getElementById('ticketList');
+  const filtered = getFiltered();
+  if (!filtered.length) {
+    list.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted2);font-family:var(--mono);font-size:12px;">No tickets found.</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(t => {
+    const urgent = URGENCY.includes(t.delivery);
+    const age = Math.floor((Date.now() - new Date(t.created)) / 3600000);
+    const ageStr = age < 1 ? 'just now' : age < 24 ? age + 'h ago' : Math.floor(age/24) + 'd ago';
+    return `
+    <div class="ticket-item ${t.id === selectedTicketId ? 'active' : ''}" onclick="selectTicket('${t.id}')">
+      ${urgent ? '<div class="urgency-dot" title="URGENT"></div>' : ''}
+      <div class="ti-top">
+        <div class="ti-code">${t.code}</div>
+        <div class="ti-time">${ageStr}</div>
+      </div>
+      <div class="ti-company">${t.company}</div>
+      <div class="ti-meta">
+        <span class="ti-vol">${fmt(t.volume)} L</span>
+        <span>${t.location}</span>
+        ${t.agent ? `<span style="color:var(--yellow);font-size:11px;">${t.agent.split(' ')[0]}</span>` : ''}
+      </div>
+      <div class="ti-status"><span class="badge badge-${t.status}">${t.status}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TICKET DETAIL ───
+const STATUS_STEPS = ['NEW','PRICING','QUOTED','CONFIRMED','DELIVERED','CLOSED'];
+
+function selectTicket(id) {
+  selectedTicketId = id;
+  renderList();
+  renderDetail();
+}
+
+function renderDetail() {
+  const t = tickets.find(x => x.id === selectedTicketId);
+  if (!t) return;
+  const panel = document.getElementById('detailPanel');
+  const currentStep = STATUS_STEPS.indexOf(t.status);
+
+  const stepperHTML = STATUS_STEPS.map((s, i) => {
+    const cls = i < currentStep ? 'done' : i === currentStep ? 'current' : '';
+    return `<div class="step ${cls}" onclick="advanceStatus('${t.id}','${s}')">
+      <div class="step-dot" title="Set to ${s}">${i < currentStep ? '✓' : i+1}</div>
+      <div class="step-label">${s}</div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div class="dh-left">
+        <div class="dh-code">${t.code}</div>
+        <div class="dh-company">${t.company}</div>
+        <div class="dh-ts">Submitted: ${new Date(t.created).toLocaleString('en-ZA')} · Agent: ${t.agent || 'Unassigned'}</div>
+      </div>
+      <div class="dh-right">
+        <span class="badge badge-${t.status}" style="font-size:13px;padding:5px 12px;">${t.status}</span>
+        ${URGENCY.includes(t.delivery) ? '<span class="badge" style="background:rgba(255,95,95,0.15);color:var(--red);border-color:rgba(255,95,95,0.3);font-size:13px;padding:5px 12px;">⚡ URGENT</span>' : ''}
+      </div>
+    </div>
+
+    <div class="stepper">${stepperHTML}</div>
+
+    <div class="info-grid">
+      <div class="info-card"><div class="ic-label">Volume</div><div class="ic-val highlight">${fmt(t.volume)} L</div></div>
+      <div class="info-card"><div class="ic-label">Grade</div><div class="ic-val highlight">${t.grade || '50ppm'}</div></div>
+      <div class="info-card"><div class="ic-label">Location</div><div class="ic-val">${t.location}</div></div>
+      <div class="info-card"><div class="ic-label">Delivery</div><div class="ic-val">${t.delivery || '—'}</div></div>
+      <div class="info-card"><div class="ic-label">Tank Capacity</div><div class="ic-val">${t.tank || '—'}</div></div>
+      <div class="info-card"><div class="ic-label">Order Type</div><div class="ic-val">${t.freq || '—'}</div></div>
+    </div>
+
+    <div class="sec-title">Client Contact</div>
+    <div class="info-grid" style="margin-bottom:0;">
+      <div class="info-card"><div class="ic-label">Contact Person</div><div class="ic-val">${t.contact}</div></div>
+      <div class="info-card"><div class="ic-label">Phone / WhatsApp</div>
+        <div class="ic-val"><a href="tel:${t.phone}" style="color:var(--text);text-decoration:none;">${t.phone}</a></div>
+      </div>
+      <div class="info-card"><div class="ic-label">Email</div><div class="ic-val" style="font-size:13px;">${t.email || '—'}</div></div>
+      <div class="info-card"><div class="ic-label">Industry</div><div class="ic-val">${t.industry || '—'}</div></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <a href="https://wa.me/${formatWANum(t.phone)}?text=${encodeURIComponent('Hi '+t.contact+', this is '+currentUser+' from Kekeletso Solutions regarding your diesel order '+t.code+'. ')}" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp Client</a>
+      <a href="tel:${t.phone}" class="btn btn-ghost btn-sm">📞 Call Client</a>
+      ${t.email ? `<a href="mailto:${t.email}?subject=Diesel Quote — ${t.code}" class="btn btn-ghost btn-sm">✉ Email Client</a>` : ''}
+    </div>
+
+    <div class="sec-title">Update Ticket</div>
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Status</div>
+        <select class="ctrl-select" onchange="updateTicketField('${t.id}','status',this.value)">
+          ${STATUS_STEPS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Assign Agent</div>
+        <select class="ctrl-select" onchange="updateTicketField('${t.id}','agent',this.value)">
+          <option value="">Unassigned</option>
+          ${['Katleho Matima','Mbuyiselo Mbonambi','Karabo Tladi'].map(a=>`<option ${t.agent===a?'selected':''}>${a}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="sec-title">Internal Notes</div>
+    <textarea class="notes-area" placeholder="Add internal notes, supplier contacted, quote sent, client feedback..." onblur="saveNotes('${t.id}',this.value)">${t.notes || ''}</textarea>
+
+    <div class="sec-title">Quote Builder</div>
+    <div class="quote-builder">
+      <div class="qb-title">⚡ FAST QUOTE GENERATOR</div>
+      <div class="qb-inputs">
+        <div class="qb-group">
+          <div class="qb-label">Price / Litre (R)</div>
+          <input class="qb-input" type="number" id="qb-price" placeholder="e.g. 17.85" step="0.01" oninput="calcQuote('${t.id}')">
+        </div>
+        <div class="qb-group">
+          <div class="qb-label">Transport (R/km)</div>
+          <input class="qb-input" type="number" id="qb-transport" placeholder="e.g. 28.50" step="0.01" oninput="calcQuote('${t.id}')">
+        </div>
+        <div class="qb-group">
+          <div class="qb-label">Distance (km)</div>
+          <input class="qb-input" type="number" id="qb-km" placeholder="e.g. 120" oninput="calcQuote('${t.id}')">
+        </div>
+        <div class="qb-group">
+          <div class="qb-label">Supplier Used</div>
+          <input class="qb-input" type="text" id="qb-supplier" placeholder="Supplier name">
+        </div>
+        <div class="qb-group">
+          <div class="qb-label">Delivery ETA</div>
+          <select class="qb-input" id="qb-eta">
+            <option value="">— Select —</option>
+            <option>24–48 hours</option>
+            <option>Within 3 days</option>
+            <option>Within 7 days</option>
+          </select>
+        </div>
+        <div class="qb-group">
+          <div class="qb-label">Valid Until</div>
+          <input class="qb-input" type="date" id="qb-valid">
+        </div>
+      </div>
+      <div class="qb-calc" id="qbCalc" style="display:none;">
+        <div class="qc-item"><div class="qc-label">Fuel Cost</div><div class="qc-val" id="qc-fuel">—</div></div>
+        <div class="qc-item"><div class="qc-label">Transport</div><div class="qc-val" id="qc-trans">—</div></div>
+        <div class="qc-item"><div class="qc-label">Total Quote</div><div class="qc-val" id="qc-total" style="color:var(--green);">—</div></div>
+      </div>
+      <div class="qb-actions">
+        <button class="btn btn-primary" onclick="generateQuote('${t.id}')">GENERATE QUOTE</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('quoteOutput').style.display='none'">CLEAR</button>
+      </div>
+    </div>
+    <div class="quote-output" id="quoteOutput"></div>
+    <div id="quoteActions" style="display:none;margin-bottom:24px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" onclick="copyQuote()">📋 Copy Quote</button>
+        <a id="waQuoteBtn" href="#" target="_blank" class="btn btn-wa btn-sm">💬 Send via WhatsApp</a>
+      </div>
+    </div>
+
+    <div style="height:40px;"></div>
+  `;
+
+  // Pre-fill supplier if selected
+  if (selectedSupplierId) {
+    const sup = suppliers.find(s => s.id === selectedSupplierId);
+    if (sup) {
+      document.getElementById('qb-price').value = sup.price || '';
+      document.getElementById('qb-transport').value = sup.transport || '';
+      document.getElementById('qb-supplier').value = sup.name || '';
+      calcQuote(t.id);
+    }
+  }
+
+  // Set valid date to 2 days from now by default
+  const d = new Date(); d.setDate(d.getDate() + 2);
+  const validEl = document.getElementById('qb-valid');
+  if (validEl) validEl.value = d.toISOString().slice(0,10);
+}
+
+function advanceStatus(id, status) {
+  updateTicketField(id, 'status', status);
+}
+
+function updateTicketField(id, field, value) {
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  t[field] = value;
+  t.updated = new Date().toISOString();
+  save();
+  render();
+  renderDetail();
+  showToast(`${field.toUpperCase()} updated → ${value}`);
+}
+
+function saveNotes(id, value) {
+  const t = tickets.find(x => x.id === id);
+  if (!t) return;
+  t.notes = value;
+  save();
+  showToast('Notes saved');
+}
+
+// ─── QUOTE CALC ───
+function calcQuote(ticketId) {
+  const t = tickets.find(x => x.id === ticketId);
+  if (!t) return;
+  const price = parseFloat(document.getElementById('qb-price')?.value) || 0;
+  const transport = parseFloat(document.getElementById('qb-transport')?.value) || 0;
+  const km = parseFloat(document.getElementById('qb-km')?.value) || 0;
+  const vol = parseInt(t.volume) || 0;
+
+  if (price > 0) {
+    const fuelCost = price * vol;
+    const transCost = transport * km;
+    const total = fuelCost + transCost;
+    document.getElementById('qb-price') && (document.getElementById('qbCalc').style.display = 'grid');
+    document.getElementById('qc-fuel').textContent = 'R' + fuelCost.toLocaleString('en-ZA', {minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('qc-trans').textContent = transCost > 0 ? 'R' + transCost.toLocaleString('en-ZA', {minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+    document.getElementById('qc-total').textContent = 'R' + total.toLocaleString('en-ZA', {minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+}
+
+function generateQuote(ticketId) {
+  const t = tickets.find(x => x.id === ticketId);
+  if (!t) return;
+  const price = parseFloat(document.getElementById('qb-price')?.value) || 0;
+  const transport = parseFloat(document.getElementById('qb-transport')?.value) || 0;
+  const km = parseFloat(document.getElementById('qb-km')?.value) || 0;
+  const supplier = document.getElementById('qb-supplier')?.value || 'Kekeletso Supply';
+  const eta = document.getElementById('qb-eta')?.value || 'To be confirmed';
+  const valid = document.getElementById('qb-valid')?.value || '';
+  const vol = parseInt(t.volume) || 0;
+
+  if (!price) { showToast('Enter a price per litre to generate quote'); return; }
+
+  const fuelCost = price * vol;
+  const transCost = transport * km;
+  const total = fuelCost + transCost;
+  const ppl = total / vol;
+
+  const quoteText = `DIESEL PRICE QUOTATION
+──────────────────────────
+Ref: ${t.code}
+Date: ${new Date().toLocaleDateString('en-ZA')}
+${valid ? 'Valid Until: ' + new Date(valid).toLocaleDateString('en-ZA') : ''}
+
+CLIENT DETAILS
+Company:  ${t.company}
+Contact:  ${t.contact}
+Location: ${t.location}
+
+ORDER DETAILS
+Grade:    ${t.grade || '50ppm'} Diesel
+Volume:   ${fmt(vol)} Litres
+Delivery: ${eta}
+
+PRICING BREAKDOWN
+Price per litre:    R${price.toFixed(2)}
+Fuel subtotal:      R${fuelCost.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+${transCost > 0 ? 'Transport cost:     R' + transCost.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2}) : ''}
+──────────────────────────
+TOTAL QUOTED:  R${total.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+Effective ppl: R${ppl.toFixed(2)} / litre
+──────────────────────────
+
+Supplier: ${supplier}
+
+Quote subject to availability.
+Payment terms: COD or approved account.
+
+Kekeletso Solutions
+📞 074 488 5562 | 083 979 8578 | +27 76 471 0788
+✉ KekeletsoSolution@gmail.com`;
+
+  const output = document.getElementById('quoteOutput');
+  output.textContent = quoteText;
+  output.style.display = 'block';
+
+  const actions = document.getElementById('quoteActions');
+  actions.style.display = 'block';
+
+  const waBtn = document.getElementById('waQuoteBtn');
+  const waMsg = `*DIESEL PRICE QUOTATION*\n\nRef: ${t.code}\n\nCompany: ${t.company}\nVolume: ${fmt(vol)} L\nLocation: ${t.location}\nGrade: ${t.grade || '50ppm'}\nDelivery: ${eta}\n\n*TOTAL: R${total.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}*\n(R${ppl.toFixed(2)}/litre)\n\nKekeletso Solutions\n074 488 5562`;
+  waBtn.href = `https://wa.me/${formatWANum(t.phone)}?text=${encodeURIComponent(waMsg)}`;
+
+  updateTicketField(ticketId, 'status', 'QUOTED');
+  showToast('Quote generated — status updated to QUOTED');
+}
+
+function copyQuote() {
+  const txt = document.getElementById('quoteOutput')?.textContent;
+  if (txt) navigator.clipboard.writeText(txt).then(() => showToast('Quote copied to clipboard'));
+}
+
+// ─── CREATE TICKET ───
+document.getElementById('nt-volume').addEventListener('change', function() {
+  document.getElementById('custom-vol-group').style.display = this.value === 'custom' ? 'block' : 'none';
+});
+
+function createTicket() {
+  const company = document.getElementById('nt-company').value.trim();
+  const contact = document.getElementById('nt-contact').value.trim();
+  const phone = document.getElementById('nt-phone').value.trim();
+  const location = document.getElementById('nt-location').value.trim();
+  const volSel = document.getElementById('nt-volume').value;
+
+  if (!company || !contact || !phone || !location || !volSel) {
+    showToast('Please fill in all required fields'); return;
+  }
+
+  const vol = volSel === 'custom' ? (document.getElementById('nt-custom-vol').value || '10000') : volSel;
+
+  const t = {
+    id: Date.now().toString(),
+    code: genId(),
+    company, contact, phone,
+    email: document.getElementById('nt-email').value.trim(),
+    location,
+    volume: vol,
+    grade: document.getElementById('nt-grade').value,
+    delivery: document.getElementById('nt-delivery').value,
+    industry: document.getElementById('nt-industry').value,
+    tank: document.getElementById('nt-tank').value,
+    freq: document.getElementById('nt-freq').value,
+    agent: document.getElementById('nt-agent').value,
+    notes: document.getElementById('nt-notes').value.trim(),
+    status: 'NEW',
+    created: new Date().toISOString(),
+    updated: new Date().toISOString()
+  };
+
+  tickets.push(t);
+  save();
+  closeModal('newTicketModal');
+  render();
+  selectedTicketId = t.id;
+  renderList();
+  renderDetail();
+  showToast(`${t.code} created successfully`);
+}
+
+// ─── SUPPLIERS ───
+function renderSuppliers() {
+  const list = document.getElementById('supplierList');
+  if (!suppliers.length) {
+    list.innerHTML = `<div style="color:var(--muted2);font-family:var(--mono);font-size:11px;padding:8px 0 16px;line-height:1.8;">No suppliers yet.<br>Add suppliers to<br>reference prices quickly.</div>`;
+    return;
+  }
+  list.innerHTML = suppliers.map(s => `
+    <div class="supplier-card ${s.id === selectedSupplierId ? 'selected' : ''}" onclick="selectSupplier('${s.id}')">
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-price">R${parseFloat(s.price||0).toFixed(2)}</div>
+      <div class="sc-price-label">per litre · ${new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short'})}</div>
+      <div class="sc-detail">
+        <strong>Depot:</strong> ${s.depot || '—'}<br>
+        <strong>Contact:</strong> ${s.contact || '—'}<br>
+        <strong>Phone:</strong> ${s.phone || '—'}
+      </div>
+      ${s.transport ? `<div class="sc-transport">R${parseFloat(s.transport).toFixed(2)}/km transport</div>` : ''}
+      <div style="margin-top:6px;">
+        ${'★'.repeat(parseInt(s.reliability||3))}${'☆'.repeat(5-parseInt(s.reliability||3))}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectSupplier(id) {
+  selectedSupplierId = selectedSupplierId === id ? null : id;
+  renderSuppliers();
+  if (selectedTicketId) renderDetail();
+}
+
+function openAddSupplier() {
+  document.getElementById('addSupplierModal').classList.add('open');
+}
+
+function saveSupplier() {
+  const name = document.getElementById('s-name').value.trim();
+  if (!name) { showToast('Supplier name required'); return; }
+  const s = {
+    id: Date.now().toString(),
+    name,
+    contact: document.getElementById('s-contact').value.trim(),
+    phone: document.getElementById('s-phone').value.trim(),
+    email: document.getElementById('s-email').value.trim(),
+    depot: document.getElementById('s-depot').value.trim(),
+    price: document.getElementById('s-price').value,
+    transport: document.getElementById('s-transport').value,
+    reliability: document.getElementById('s-reliability').value,
+  };
+  suppliers.push(s);
+  saveSuppliers();
+  closeModal('addSupplierModal');
+  renderSuppliers();
+  showToast(`${name} added to suppliers`);
+  ['s-name','s-contact','s-phone','s-email','s-depot','s-price','s-transport'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ─── MODALS ───
+function openNewTicket() { document.getElementById('newTicketModal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+
+// ─── TOAST ───
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── UTILS ───
+function fmt(n) { return parseInt(n||0).toLocaleString('en-ZA'); }
+function formatWANum(p) { return p ? p.replace(/\D/g,'').replace(/^0/,'27') : ''; }
+</script>
+</body>
+</html>

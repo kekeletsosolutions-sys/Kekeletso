@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kekeletso Solutions – Bulk Diesel Supply</title>
+<meta name="description" content="Bulk diesel delivered across South Africa and cross-border. 50PPM Vopak-sourced diesel from 10,000 litres. Fast quotes, reliable supply.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0a;color:#e8e8e8;font-family:'Barlow',sans-serif;font-size:15px;}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid #242424;display:flex;align-items:center;padding:0 28px;height:56px;}
+.nb{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#f5c518;text-decoration:none;}
+.nb span{color:#e8e8e8;}
+.nr{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.nph{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:#888;text-decoration:none;}
+.ncta{background:#f5c518;color:#0a0a0a;border:none;padding:8px 22px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;letter-spacing:1px;cursor:pointer;border-radius:3px;text-decoration:none;text-transform:uppercase;}
+.hero{padding:52px 28px 44px;background:linear-gradient(155deg,#0a0a0a 0%,#0f0d00 100%);border-bottom:2px solid #f5c518;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(245,197,24,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,0.04) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at 70% 50%,black 20%,transparent 65%);}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;position:relative;z-index:1;}
+.hero-tag{display:inline-block;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);color:#f5c518;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;padding:5px 12px;margin-bottom:16px;border-radius:2px;text-transform:uppercase;}
+h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(48px,7vw,80px);line-height:0.9;text-transform:uppercase;margin-bottom:16px;}
+h1 em{color:#f5c518;font-style:normal;display:block;}
+.hero-desc{color:#888;font-size:16px;font-weight:300;max-width:480px;margin-bottom:28px;line-height:1.65;}
+.hero-desc strong{color:#e8e8e8;font-weight:500;}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-y{background:#f5c518;color:#0a0a0a;border:none;padding:15px 32px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;letter-spacing:1px;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block;text-transform:uppercase;}
+.btn-g{background:transparent;color:#e8e8e8;border:1px solid #2e2e2e;padding:15px 24px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block;text-transform:uppercase;}
+.hero-facts{background:#141414;border:1px solid #242424;border-radius:3px;padding:20px;min-width:200px;}
+.hf-row{padding:10px 0;border-bottom:1px solid #1e1e1e;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.hf-row:last-child{border-bottom:none;padding-bottom:0;}
+.hf-row:first-child{padding-top:0;}
+.hf-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#555;}
+.hf-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#f5c518;}
+.trust{background:#141414;border-bottom:1px solid #242424;padding:16px 28px;}
+.trust-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:0;justify-content:space-between;align-items:center;}
+.ti{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#888;padding:4px 0;}
+.ti-dot{width:6px;height:6px;border-radius:50%;background:#f5c518;flex-shrink:0;}
+.how{max-width:1100px;margin:0 auto;padding:48px 28px;}
+.sec-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:#f5c518;text-transform:uppercase;margin-bottom:6px;}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(28px,4vw,42px);text-transform:uppercase;line-height:1;margin-bottom:28px;}
+.sec-title em{color:#f5c518;font-style:normal;}
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.step-card{background:#141414;border:1px solid #242424;border-radius:3px;padding:24px 20px;}
+.step-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:40px;color:rgba(245,197,24,0.15);line-height:1;margin-bottom:8px;}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:6px;}
+.step-body{font-size:13px;color:#888;line-height:1.65;}
+.agents-section{background:#111;border-top:1px solid #242424;border-bottom:1px solid #242424;padding:48px 28px;}
+.agents-inner{max-width:1100px;margin:0 auto;}
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px;}
+.ac{background:#181818;border:1px solid #242424;border-top:3px solid #f5c518;border-radius:3px;padding:20px;}
+.ac-role{font-size:10px;font-weight:700;letter-spacing:2px;color:#f5c518;text-transform:uppercase;margin-bottom:6px;}
+.ac-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;margin-bottom:2px;}
+.ac-region{font-size:12px;color:#555;margin-bottom:12px;}
+.ac-phone{display:block;color:#e8e8e8;text-decoration:none;font-size:13px;font-weight:500;margin-bottom:2px;}
+.ac-email{display:block;color:#555;text-decoration:none;font-size:12px;margin-bottom:12px;}
+.wa{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;border:none;padding:9px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;border-radius:3px;cursor:pointer;text-decoration:none;}
+.coverage{max-width:1100px;margin:0 auto;padding:0 28px 48px;}
+.cov-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;}
+.cov-card{background:#141414;border:1px solid #242424;border-radius:3px;padding:18px 20px;}
+.cov-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#f5c518;margin-bottom:10px;}
+.cov-list{display:flex;flex-wrap:wrap;gap:6px;}
+.cov-tag{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:2px;padding:4px 10px;font-size:12px;color:#aaa;}
+.cta-bar{background:#f5c518;padding:48px 28px;text-align:center;}
+.cta-bar h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(32px,5vw,54px);text-transform:uppercase;color:#0a0a0a;margin-bottom:8px;line-height:1;}
+.cta-bar p{color:rgba(0,0,0,0.55);font-size:15px;margin-bottom:24px;}
+.btn-dark{background:#0a0a0a;color:#f5c518;border:none;padding:16px 40px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;letter-spacing:2px;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block;text-transform:uppercase;}
+footer{background:#111;border-top:1px solid #242424;padding:28px;text-align:center;}
+.fb{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:#f5c518;margin-bottom:6px;}
+.fi{font-size:12px;color:#555;line-height:2;}
+.fi a{color:#555;text-decoration:none;}
+@media(max-width:700px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-facts{display:none;}
+  .steps{grid-template-columns:1fr;}
+  .agents-grid{grid-template-columns:1fr;}
+  .cov-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nb">KEKELETSO <span>SOLUTIONS</span></a>
+  <div class="nr">
+    <a href="tel:0744885562" class="nph">074 488 5562</a>
+    <a href="order.html" class="ncta">Get a Quote</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Bulk Fuel Procurement · SA &amp; Cross-Border</div>
+      <h1>BULK DIESEL<em>DELIVERED.</em></h1>
+      <p class="hero-desc"><strong>50PPM Vopak-sourced diesel</strong> from 10,000 litres. Delivered to your site across South Africa and cross-border. Mining, transport, agriculture, construction.</p>
+      <div class="hero-ctas">
+        <a href="order.html" class="btn-y">Request a Quote ⛽</a>
+        <a href="tel:0744885562" class="btn-g">Call Now</a>
+      </div>
+    </div>
+    <div class="hero-facts">
+      <div class="hf-row"><span class="hf-label">Grade</span><span class="hf-val">50PPM</span></div>
+      <div class="hf-row"><span class="hf-label">Min. Order</span><span class="hf-val">10,000L</span></div>
+      <div class="hf-row"><span class="hf-label">Source</span><span class="hf-val">VOPAK</span></div>
+      <div class="hf-row"><span class="hf-label">Provinces</span><span class="hf-val">All 9</span></div>
+      <div class="hf-row"><span class="hf-label">Cross-Border</span><span class="hf-val">7 Countries</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="trust-inner">
+    <div class="ti"><div class="ti-dot"></div>Vopak certified source</div>
+    <div class="ti"><div class="ti-dot"></div>Quote within 2 hours</div>
+    <div class="ti"><div class="ti-dot"></div>COD or monthly account</div>
+    <div class="ti"><div class="ti-dot"></div>Engine-safe 50PPM</div>
+    <div class="ti"><div class="ti-dot"></div>Direct agent contact</div>
+    <div class="ti"><div class="ti-dot"></div>No call centres</div>
+  </div>
+</div>
+
+<div class="how">
+  <div class="sec-label">How It Works</div>
+  <div class="sec-title">ORDER IN <em>3 STEPS.</em></div>
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-n">01</div>
+      <div class="step-title">Submit Your Request</div>
+      <div class="step-body">Fill in the order form — volume, location, delivery date. Takes less than 2 minutes.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-n">02</div>
+      <div class="step-title">Receive a Quote</div>
+      <div class="step-body">Your dedicated agent responds with a competitive price within 2 hours. Direct WhatsApp or email.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-n">03</div>
+      <div class="step-title">Diesel Delivered</div>
+      <div class="step-body">Confirm the order and we arrange delivery directly to your site. No middlemen, no delays.</div>
+    </div>
+  </div>
+</div>
+
+<div class="agents-section">
+  <div class="agents-inner">
+    <div class="sec-label">Your Agents</div>
+    <div class="sec-title">SPEAK TO AN <em>AGENT.</em></div>
+    <div class="agents-grid">
+
+      <div class="ac">
+        <div class="ac-role">Agent · All Regions</div>
+        <div class="ac-name">KATLEHO MATIMA</div>
+        <div class="ac-region">South Africa &amp; Cross-Border</div>
+        <a href="tel:0744885562" class="ac-phone">074 488 5562</a>
+        <a href="mailto:KekeletsoSolution@gmail.com" class="ac-email">KekeletsoSolution@gmail.com</a>
+        <a href="https://wa.me/27744885562?text=Hi%20Katleho%2C%20I%20need%20a%20bulk%20diesel%20quote." class="wa" target="_blank">WhatsApp</a>
+      </div>
+
+      <div class="ac">
+        <div class="ac-role">Agent · All Regions</div>
+        <div class="ac-name">MBUYISELO MBONAMBI</div>
+        <div class="ac-region">South Africa &amp; Cross-Border</div>
+        <a href="tel:0839798578" class="ac-phone">083 979 8578</a>
+        <a href="mailto:KekeletsoSolution@gmail.com" class="ac-email">KekeletsoSolution@gmail.com</a>
+        <a href="https://wa.me/27839798578?text=Hi%20Mbuyiselo%2C%20I%20need%20a%20bulk%20diesel%20quote." class="wa" target="_blank">WhatsApp</a>
+      </div>
+
+      <div class="ac">
+        <div class="ac-role">Agent · All Regions</div>
+        <div class="ac-name">KARABO TLADI</div>
+        <div class="ac-region">South Africa &amp; Cross-Border</div>
+        <a href="tel:0764710788" class="ac-phone">076 471 0788</a>
+        <a href="mailto:KekeletsoSolution@gmail.com" class="ac-email">KekeletsoSolution@gmail.com</a>
+        <a href="https://wa.me/27764710788?text=Hi%20Karabo%2C%20I%20need%20a%20bulk%20diesel%20quote." class="wa" target="_blank">WhatsApp</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="coverage">
+  <div style="padding-top:48px;">
+    <div class="sec-label">Where We Deliver</div>
+    <div class="sec-title" style="margin-bottom:16px;">SA &amp; <em>CROSS-BORDER.</em></div>
+  </div>
+  <div class="cov-grid">
+    <div class="cov-card">
+      <div class="cov-title">All 9 SA Provinces</div>
+      <div class="cov-list">
+        <span class="cov-tag">Gauteng</span>
+        <span class="cov-tag">Mpumalanga</span>
+        <span class="cov-tag">Limpopo</span>
+        <span class="cov-tag">North West</span>
+        <span class="cov-tag">Free State</span>
+        <span class="cov-tag">KwaZulu-Natal</span>
+        <span class="cov-tag">Eastern Cape</span>
+        <span class="cov-tag">Western Cape</span>
+        <span class="cov-tag">Northern Cape</span>
+      </div>
+    </div>
+    <div class="cov-card">
+      <div class="cov-title">Cross-Border Delivery</div>
+      <div class="cov-list">
+        <span class="cov-tag">Botswana</span>
+        <span class="cov-tag">Zimbabwe</span>
+        <span class="cov-tag">Mozambique</span>
+        <span class="cov-tag">Namibia</span>
+        <span class="cov-tag">Zambia</span>
+        <span class="cov-tag">Lesotho</span>
+        <span class="cov-tag">Eswatini</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-bar">
+  <h2>READY TO ORDER?</h2>
+  <p>Minimum 10,000 litres. Quote within 2 hours.</p>
+  <a href="order.html" class="btn-dark">REQUEST A QUOTE →</a>
+</div>
+
+<footer>
+  <div class="fb">KEKELETSO SOLUTIONS</div>
+  <div class="fi">
+    <a href="tel:0744885562">074 488 5562</a> · <a href="tel:0839798578">083 979 8578</a> · <a href="tel:0764710788">076 471 0788</a><br>
+    <a href="mailto:KekeletsoSolution@gmail.com">KekeletsoSolution@gmail.com</a><br>
+    © 2026 Kekeletso Solutions · Licensed Bulk Fuel Procurement
+  </div>
+</footer>
+
+</body>
+</html>
